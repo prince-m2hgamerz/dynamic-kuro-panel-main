@@ -1,5 +1,19 @@
--- Enable realtime for profiles table
-ALTER PUBLICATION supabase_realtime ADD TABLE public.profiles;
+-- Enable realtime for profiles table (idempotent)
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_publication_rel pr
+    JOIN pg_class c ON c.oid = pr.prrelid
+    JOIN pg_namespace n ON n.oid = c.relnamespace
+    JOIN pg_publication p ON p.oid = pr.prpubid
+    WHERE p.pubname = 'supabase_realtime'
+      AND n.nspname = 'public'
+      AND c.relname = 'profiles'
+  ) THEN
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.profiles;
+  END IF;
+END $$;
 
 -- Fix RLS policies for frontend_rate_limits (remove permissive true)
 DROP POLICY IF EXISTS "Service role only for frontend rate limits" ON public.frontend_rate_limits;
