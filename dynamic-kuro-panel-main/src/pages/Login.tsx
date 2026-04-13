@@ -38,6 +38,7 @@ const Login = () => {
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [pendingUserId, setPendingUserId] = useState<string | null>(null);
   const [clientIp, setClientIp] = useState<string>("");
+  const [debugAccessToken, setDebugAccessToken] = useState<string>("");
   const perf = useDevicePerformance();
   const anim = perf.enableEntryAnimations;
   const { theme, isDark, toggleTheme } = usePanelTheme();
@@ -117,6 +118,7 @@ const Login = () => {
         setIsLoading(false);
         return;
       }
+      setDebugAccessToken(session.access_token);
 
       const userId = session.user.id;
       const userEmail = session.user.email;
@@ -483,6 +485,23 @@ const Login = () => {
                 Create Account
               </Link>
             </motion.p>
+
+            {debugAccessToken ? (
+              <div
+                className="mt-6 rounded-xl p-3 text-xs break-all"
+                style={{
+                  background: "rgba(0,0,0,0.35)",
+                  border: `1px solid rgba(${accentRgb},0.2)`,
+                  color: textSecondary,
+                  fontFamily: "'General Sans', 'Inter', sans-serif",
+                }}
+              >
+                <div className="text-[10px] uppercase tracking-[0.2em] mb-2" style={{ color: textMuted }}>
+                  Debug Access Token
+                </div>
+                {debugAccessToken}
+              </div>
+            ) : null}
           </div>
         </motion.div>
 
