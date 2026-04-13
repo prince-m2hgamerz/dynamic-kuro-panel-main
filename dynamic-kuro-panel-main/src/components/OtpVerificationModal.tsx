@@ -42,6 +42,23 @@ export const OtpVerificationModal = ({
   // Use ref to prevent duplicate sends on re-renders
   const hasSentOtpRef = useRef(false);
 
+  const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  const getAccessToken = async () => {
+    // Retry a few times in case the session hasn't hydrated yet
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+      if (token) return token;
+      if (attempt < 2) {
+        await wait(200);
+      }
+    }
+
+    const { data: refreshed } = await supabase.auth.refreshSession();
+    return refreshed.session?.access_token ?? "";
+  };
+
   // Countdown timer for resend
   useEffect(() => {
     if (countdown > 0) {
@@ -68,11 +85,21 @@ export const OtpVerificationModal = ({
   const sendOtp = async () => {
     setIsSending(true);
     try {
-      const { data: sessionData } = await supabase.auth.getSession();
-      const accessToken = sessionData.session?.access_token ?? "";
+      const accessToken = await getAccessToken();
+      if (!accessToken) {
+        toast({
+          title: "Session Missing",
+          description: "Please sign in again to request an OTP.",
+          variant: "destructive",
+        });
+        return;
+      }
 
       const { data, error } = await supabase.functions.invoke("telegram-otp/send", {
-        headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+        },
         body: { userId, ipAddress: clientIp },
       });
 
@@ -153,11 +180,21 @@ export const OtpVerificationModal = ({
 
     setIsVerifying(true);
     try {
-      const { data: sessionData } = await supabase.auth.getSession();
-      const accessToken = sessionData.session?.access_token ?? "";
+      const accessToken = await getAccessToken();
+      if (!accessToken) {
+        toast({
+          title: "Session Missing",
+          description: "Please sign in again to verify the OTP.",
+          variant: "destructive",
+        });
+        return;
+      }
 
       const { data, error } = await supabase.functions.invoke("telegram-otp/verify", {
-        headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+        },
         body: { userId, otpCode },
       });
 
