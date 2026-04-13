@@ -68,7 +68,11 @@ export const OtpVerificationModal = ({
   const sendOtp = async () => {
     setIsSending(true);
     try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData.session?.access_token ?? "";
+
       const { data, error } = await supabase.functions.invoke("telegram-otp/send", {
+        headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined,
         body: { userId, ipAddress: clientIp },
       });
 
@@ -149,7 +153,11 @@ export const OtpVerificationModal = ({
 
     setIsVerifying(true);
     try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData.session?.access_token ?? "";
+
       const { data, error } = await supabase.functions.invoke("telegram-otp/verify", {
+        headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined,
         body: { userId, otpCode },
       });
 
