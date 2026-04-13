@@ -305,12 +305,52 @@ Deno.serve(async (req) => {
     const url = new URL(req.url);
     const path = url.pathname.split("/").pop();
 
-    // Create Supabase client with service role key
+    const authHeader = req.headers.get("authorization") || "";
+    if (!authHeader.toLowerCase().startsWith("bearer ")) {
+      return new Response(
+        JSON.stringify({ error: "Missing or invalid authorization header" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const token = authHeader.slice(7).trim();
+    if (!token) {
+      return new Response(
+        JSON.stringify({ error: "Missing bearer token" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Validate user token explicitly (verify_jwt is disabled for ES256 tokens)
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const authClient = createClient(supabaseUrl, supabaseAnonKey, {
+      auth: { persistSession: false, autoRefreshToken: false },
+      global: { headers: { Authorization: `Bearer ${token}` } },
+    });
+
+    const { data: authData, error: authError } = await authClient.auth.getUser(token);
+    if (authError || !authData?.user) {
+      console.error("[OTP] Invalid JWT:", authError);
+      return new Response(
+        JSON.stringify({ error: "Invalid JWT" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const authedUserId = authData.user.id;
 
     const body = await req.json();
+    if (!body?.userId || body.userId !== authedUserId) {
+      return new Response(
+        JSON.stringify({ error: "User mismatch" }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Create Supabase client with service role key
+    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     switch (path) {
       case "send":

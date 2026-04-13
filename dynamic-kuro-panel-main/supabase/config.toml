@@ -17,3 +17,6 @@ verify_jwt = false
 
 [functions.login-lockout]
 verify_jwt = false
+
+[functions.telegram-otp]
+verify_jwt = false
