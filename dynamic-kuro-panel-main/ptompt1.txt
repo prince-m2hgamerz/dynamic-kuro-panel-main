@@ -1,0 +1,159 @@
+bro sun tera ko aaj finally kam karna hai panel pe last kam 
+
+
+baat sun ek to tera ko  bot ko next level upgrade karde   hana apna dil se khuc aacha dal
+
+
+
+sun dusre kam   jab password reset karoge to. supabase auth ka use karna  supabase auth  Confirm your account
+Your account has been created. Confirm the email address to unlock sign-in and continue into the ViBEX Panel.
+
+Security
+
+The confirmation link routes through the same controlled auth flow used by the panel. Once confirmed, owner-grade users still pass Telegram OTP.
+
+Confirm account
+If the button does not open, use this fallback link:
+
+
+
+aaa hota hai  
+
+supabase auth karna loveble auth hata de
+
+
+
+
+baat sun   thoda bug hai like kabhi kabhi screen stack ho jati hai refresh pe bhi fix nhi hoti
+
+
+
+or sun mera ko  ya   same system bana  but but me jasa photo tera ko de rha hu wase ui. hona chahiye tu ek  detailed prompt bana me  kisi or ai se banawa luga or suno prompt me ya baat likha dena ki sub khuc server side ho client side nhi or jo jo  me screenshot me show karuga wo wo ho with same ui  iska ander bhi supabase auth ka use ho 
+
+
+
+
+
+
+or sun  panel ke sub page check kar khi bhi  khuc line me bug ui me bug ya fir khuc bhi clinet side milta hai ya khuc asa jis se  user  ya hacker easily  server tak ja ke database read kar sakta hai isko fix kar   hacker  jana nhi chayan database tak  kase bhi
+
+
+
+or sun panel thoda smoth karo  smoth ke sath matlab page fast reload hone chayan asa karo  samaj aaya  ye karo. important
+
+
+
+and apna panel me  40 present request backend server block karta hai   ya problem fix karo or sun 
+
+
+ new page load karna pe. website   smooth nhi lagti lag lag se  lagti hai. or sun jab new page on karu to nav bar jata nhi  nav bar jana chayan or jo page open kiya wo  pura open. hona chahiye
+ 
+ 
+ 
+ or jo assist me. faltu photo hai jo use nhi ho rhe wo hata do 
+ 
+ 
+ 
+ 
+ ek baat suno  mtlb koi asa rasta mat chhodna jis se hacker database tak ja sakta hai  koi bhi  asa mat chhodna  sub check karo  or  fix karo
+ 
+ 
+ 
+ 
+ 
+ 
+ or sun  bot jab upgrade karaga to  ek system dalna me kisi user ko message send  kar sakta hu sub ko ek sath kar sakta hu  or ek alag  broadcast bhi bana  broadcast se bhi sub ko. message send kar sakta hu sub ki key ka  alert meea pass aana chahiye kitna day baki hai  or  jitna information hai like  devic name devic model wo sub mera  pass aana chahiye sub. information  or sun bhai jase bot ka. name mana  lala bhai likha to /buy /start khuc bhi karna pe. lala bhai pvt key selling bot likha aana chahiye
+ 
+ 
+ 
+ or sun ek problem to batana he bhul gya jab refer banata hu refer me.  me owner karu admin karu khuc bhi karu kitna bhi balance add karu me  but  but   jab banda register hota hai to  reseller he aata hai jo. mana select kiya wo nhi aata 
+ 
+ 
+ 
+ 
+ or sun  har c++ login thoda alag hota hai  asa bana hai type ke code ke sath  connect hoja  easily or. sun  Android clients se communicate kar sake    easily android. ios sub  ke sath
+
+
+
+
+
+or bro ek  new update or dalna hai sun
+
+phale  c++ login support karta tha na abhi license key bhi support karaga matlab sun   java support karaga bro ya le explain code
+
+package top.niunaijun.blackbox.core.system.api;
+
+import android.os.AsyncTask;
+import android.util.Log;
+
+import org.json.JSONObject;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import top.niunaijun.blackbox.BlackBoxCore;
+
+public class LicenseVerifier {
+
+    public interface Callback {
+        void onResult(boolean isValid, String message);
+    }
+
+    public static void verify(final String licenseKey, final Callback callback) {
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... voids) {
+                try {
+					String packageName = BlackBoxCore.getHostPkg();
+                    URL url = new URL("https://etzchciutckbwreroahg.supabase.co/functions/v1/sarkar-api/connect");
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestMethod("POST");
+                    conn.setDoOutput(true);
+                    conn.setConnectTimeout(10000);
+                    conn.setReadTimeout(10000);
+					
+					String params = "user_key=" + URLEncoder.encode(licenseKey, "UTF-8") + "&package_name=" + URLEncoder.encode(packageName, "UTF-8");
+                    //String params = "user_key=" + URLEncoder.encode(licenseKey, "UTF-8");
+					
+                    OutputStream os = conn.getOutputStream();
+                    os.write(params.getBytes());
+                    os.flush();
+                    os.close();
+
+                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    String line, response = "";
+                    while ((line = br.readLine()) != null) response += line;
+                    br.close();
+
+                    return response;
+                } catch (Exception e) {
+                    return "{\"status\":\"fail\",\"reason\":\"" + e.getMessage() + "\"}";
+                }
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                Log.d("LICENSE_DEBUG", "Server Response: " + result);
+                try {
+                    JSONObject json = new JSONObject(result);
+                    if (json.getString("status").equals("success")) {
+                        callback.onResult(true, "License valid till: " + json.getString("expiry"));
+                    } else {
+                        callback.onResult(false, json.getString("reason"));
+                    }
+                } catch (Exception e) {
+                    callback.onResult(false, "JSON parsing error: " + e.getMessage());
+                }
+            }
+        }.execute();
+    }
+}
+
+  asa hoga  mera java code   ya jo java code hoga  iska sath package name hoga  jo server pe aaga or suno. jo  panel  me se package page se  jo package name add karuga  wo package name   he verify hoga  wo package aaga to  key chevk hogi warna fir   sidha reject man lo aprove ho gyi to key check karaga key working hogi to login warna rejected or fir mana kar dega bro ya system dal  or suno   package keys page alag hoga ja se hum key bana sakte hai wo normal  c++ code me work nhi karagi  wo   only ye java code me work karagi   package keys me se  me key nikalta hu  500 devic  7 day to wo   500 devic me work karagi but  key bante time me  package aprove on ya off kar sakta hu matlab me off kardu to  fir wo   kou bhi banda  https://etzchciutckbwreroahg.supabase.co/functions/v1/sarkar-api/connect ya url dal kar apni key se without package name login kar sakta hai package name change nhi hoga wo key ke liye bro samaj aaya   jab package on hoga jab phale  key check karaga fir package check karaga  java  code ke liye working hona chahiye bro  isko hum sdk panel. bol sakte hai bro  or sun iska url alag ho like  https://etzchciutckbwreroahg.supabase.co/functions/v1/sarkar-api/sdk/panel/connect
+  
+  
+  
+ sun last baat   sun karna ke baad  ek bar  recheck karo khi problem milti hai to isko fix karo fir se sub khuc recheck. karo jab tak confirm nhi ho jat sub safe hai  
+ 
+ 
+ 

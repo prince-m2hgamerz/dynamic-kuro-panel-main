@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reset Your Password - SARKAR Panel</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: linear-gradient(135deg, #130d08 0%, #25160d 45%, #0b0907 100%);
+      margin: 0;
+      padding: 40px 20px;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 520px;
+      margin: 0 auto;
+      background: rgba(16, 12, 8, 0.96);
+      border-radius: 18px;
+      border: 1px solid rgba(255, 140, 40, 0.22);
+      padding: 40px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.55);
+    }
+    .logo {
+      width: 80px;
+      height: 80px;
+      border-radius: 16px;
+      margin: 0 auto 20px;
+      display: block;
+      border: 2px solid #ff8c28;
+      object-fit: cover;
+    }
+    h1 {
+      color: #ffd3aa;
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 24px;
+      font-weight: 700;
+    }
+    .brand {
+      color: #ffb56f;
+      text-align: center;
+      font-size: 14px;
+      margin-bottom: 30px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    p {
+      color: #f5e7d6;
+      line-height: 1.65;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .button {
+      display: block;
+      width: fit-content;
+      margin: 30px auto;
+      padding: 14px 32px;
+      background: linear-gradient(135deg, #ff8c28, #d65c20);
+      color: #ffffff !important;
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: 700;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(255, 140, 40, 0.28);
+    }
+    .note {
+      color: #c1a489;
+      font-size: 14px;
+      text-align: center;
+    }
+    .note a {
+      color: #ffb56f;
+      word-break: break-all;
+    }
+    .footer {
+      color: #c1a489;
+      font-size: 12px;
+      text-align: center;
+      margin-top: 30px;
+      border-top: 1px solid rgba(255, 140, 40, 0.16);
+      padding-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="https://kuro-panel.lovable.app/sarkar-logo.jpg" alt="SARKAR Panel" class="logo">
+    <h1>Reset Your Password</h1>
+    <div class="brand">SARKAR Panel</div>
+
+    <p>You requested a password reset for your SARKAR Panel account. Continue through the same controlled auth flow used by the panel to set a new password securely.</p>
+
+    <a href="{{ .ConfirmationURL }}" class="button">Reset Password</a>
+
+    <p class="note">If the button does not open, use this fallback link:<br><a href="{{ .ConfirmationURL }}">{{ .ConfirmationURL }}</a></p>
+
+    <div class="footer">
+      © 2026 SARKAR Panel<br>
+      Controlled Supabase Auth Flow
+    </div>
+  </div>
+</body>
+</html>

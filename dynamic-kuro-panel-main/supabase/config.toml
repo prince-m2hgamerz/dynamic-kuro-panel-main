@@ -1,0 +1,19 @@
+project_id = "etzchciutckbwreroahg"
+
+[functions.sarkar-api]
+verify_jwt = false
+
+[functions.check-ip]
+verify_jwt = false
+
+[functions.ghost-admin]
+verify_jwt = false
+
+[functions.ip-manager]
+verify_jwt = false
+
+[functions.shieldwall-check]
+verify_jwt = false
+
+[functions.login-lockout]
+verify_jwt = false
