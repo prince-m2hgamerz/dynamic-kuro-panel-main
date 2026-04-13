@@ -27,8 +27,12 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const authHeader = req.headers.get("authorization");
-    if (!authHeader) {
+    const authHeader = req.headers.get("authorization") || "";
+    if (!authHeader.toLowerCase().startsWith("bearer ")) {
+      return errorResponse("Unauthorized", 401);
+    }
+    const token = authHeader.slice(7).trim();
+    if (!token) {
       return errorResponse("Unauthorized", 401);
     }
 
@@ -37,9 +41,10 @@ Deno.serve(async (req) => {
     const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
 
     const userClient = createClient(supabaseUrl, anonKey, {
-      global: { headers: { Authorization: authHeader } },
+      auth: { persistSession: false, autoRefreshToken: false },
+      global: { headers: { Authorization: `Bearer ${token}` } },
     });
-    const { data: { user }, error: authError } = await userClient.auth.getUser();
+    const { data: { user }, error: authError } = await userClient.auth.getUser(token);
     if (authError || !user) {
       return errorResponse("Invalid auth token", 401);
     }
